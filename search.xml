@@ -1,0 +1,479 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search> 
+  
+    
+    <entry>
+      <title><![CDATA[解决Sublime Text 3 中文编码问题]]></title>
+      <url>/2018/02/11/%E8%A7%A3%E5%86%B3Sublime-Text-3-%E4%B8%AD%E6%96%87%E7%BC%96%E7%A0%81%E9%97%AE%E9%A2%98/</url>
+      <content type="html"><![CDATA[<h2 id="现象"><a href="#现象" class="headerlink" title="现象"></a>现象</h2><p>在Sublime Text 3中执行Python 3脚本时, 如果需要输出中文, 会经常出现下面的问题:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">UnicodeEncodeError: &apos;ascii&apos; codec can&apos;t encode character &apos;\u4e2d&apos; in position 0: ordinal not in range(128)</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h2 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h2><p>对此问题的解决方法总共分两部分.</p>
+<p>第一步, 在自定义的Python3编译系统中加入一项属性–”env”: {“LANG”: “en_US.UTF-8”}, 下面是我的配置,</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"cmd"</span>: [<span class="string">"/usr/local/bin/python3.6"</span>, <span class="string">"-u"</span>, <span class="string">"$file"</span>],</span><br><span class="line">    <span class="attr">"file_regex"</span>: <span class="string">"^[ ]*File \"(...*?)\", line ([0-9]*)"</span>,</span><br><span class="line">    <span class="attr">"selector"</span>: <span class="string">"source.python"</span>,</span><br><span class="line">    <span class="attr">"env"</span>: &#123;<span class="attr">"LANG"</span>: <span class="string">"en_US.UTF-8"</span>&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>第二步, 在环境变量中添加LANG=en_US.UTF-8.</p>
+<p>编辑<code>/Users/mac(你的用户名)/.bash_profile</code>文件(具体的文件取决于你使用的terminal, 我使用的是mac原生bash).</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> LANG=en_US.UTF-8</span><br></pre></td></tr></table></figure>
+<p>再次执行你的文件, 是不是就可以正常显示中文啦~</p>
+]]></content>
+      
+        <categories>
+            
+            <category> 总结 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> sublime text 3 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[箭头函数与this]]></title>
+      <url>/2017/09/08/%E7%AE%AD%E5%A4%B4%E5%87%BD%E6%95%B0%E4%B8%8Ethis/</url>
+      <content type="html"><![CDATA[<h1 id="PRE"><a href="#PRE" class="headerlink" title="PRE"></a>PRE</h1><p>箭头函数使用起来很便利，但要在箭头函数中使用this关键字的时候却要小心，它与function定义的函数有所不同。<br><a id="more"></a></p>
+<blockquote>
+<p>箭头函数没有独立的上下文</p>
+</blockquote>
+<p>与通过function定义的函数不同的是，箭头函数并没有独立的上下文。下面的对比可以说明这个问题。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="keyword">let</span> obj1 = &#123;</span><br><span class="line">        a: <span class="string">'aaa'</span>,</span><br><span class="line">        b: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="keyword">this</span>.a);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    obj1.b();</span><br><span class="line">&#125;</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">let</span> obj2 = &#123;</span><br><span class="line">        a: <span class="string">'aa'</span>,</span><br><span class="line">        b: <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="keyword">this</span>.a);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    obj2.b();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>简单思考一下，结果如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">aaa</span><br><span class="line">undefined</span><br></pre></td></tr></table></figure>
+<p><code>obj1</code>中的<code>b</code>函数通过<code>function</code>定义，<code>obj2</code>中的<code>b</code>函数通过箭头函数定义。<br>由于<code>function</code>定义的函数具有独立的上下文，且<code>b</code>函数是在<code>obj1</code>对象中定义的，因此它的函数内部的<code>this</code>指代的是它所处的<code>obj</code>对象。<br>而在<code>obj2</code>中，<code>b</code>函数是通过箭头函数定义，而箭头函数并没有独立的上下文，于是它会向外寻找最近的<code>function</code>定义的函数的上下文。若找到，那么箭头函数里的<code>this</code>就指代那个定义了<code>function</code>的对象；若没找到，那么这个<code>this</code>将指代全局对象。在这里，该箭头函数并没有向外找到任何function定义的函数，所以这个<code>this</code>指代的是全局对象，而全局对象中并没有定义<code>a</code>，所以会返回<code>undefined</code>。<br>所以说如果希望在某对象中的函数使用<code>this</code>来引用对象，第一种方法是可行的，直接使用第二种是不可以的。另外，根据ES6新特性，在第一种方法中，函数定义方式可以简化为以下形式：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> obj1 = &#123;</span><br><span class="line">    a: <span class="string">'aaa'</span>,</span><br><span class="line">    b() &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="keyword">this</span>.a);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">obj1.b();</span><br></pre></td></tr></table></figure>
+]]></content>
+      
+        <categories>
+            
+            <category> 创作 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> JavaScript </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Android终端神器————Termux初体验]]></title>
+      <url>/2017/09/07/termux/</url>
+      <content type="html"><![CDATA[<h1 id="PRE"><a href="#PRE" class="headerlink" title="PRE"></a>PRE</h1><p>Termux是一款Android平台上优秀的终端应用，它可以模拟Linux的Shell环境，并可通过<code>pkg install</code>等命令安装诸如vim、python、node、git、openssh等程序包，如此一来，我们不仅可以在手机端coding，还可以通过openssh远程连接服务器（命令行党和Linux党是不是已经心动了呢）。</p>
+<a id="more"></a>
+<h2 id="INSTALL"><a href="#INSTALL" class="headerlink" title="INSTALL"></a>INSTALL</h2><p>安装要求： Android(&gt;= 5.0)<br>下载地址： <a href="https://www.coolapk.com/apk/com.termux" target="_blank" rel="noopener">链接（酷安网）</a><br>官方网站： <a href="https://termux.com/" target="_blank" rel="noopener">链接</a><br>是否需要Root权限： 否</p>
+<h2 id="TIPS"><a href="#TIPS" class="headerlink" title="TIPS"></a>TIPS</h2><h3 id="常用快捷键"><a href="#常用快捷键" class="headerlink" title="常用快捷键"></a>常用快捷键</h3><p><code>[Vol+] + Q</code> 弹出“ESC CTR ALT TAB”等常用虚拟按键</p>
+<p><code>[Vol-]</code> Ctrl键</p>
+<p><code>[Vol-] + W</code> 光标向上移动</p>
+<p><code>[Vol-] + S</code> 光标向下移动</p>
+<p><code>[Vol-] + A</code> 光标向左移动</p>
+<p><code>[Vol-] + D</code> 光标向右移动</p>
+<p>注：Vol+为音量+键，Vol-为音量-键。</p>
+<h3 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h3><h4 id="安装程序包"><a href="#安装程序包" class="headerlink" title="安装程序包"></a>安装程序包</h4><p><code>pkg install</code>（后面加程序包名），例如：<code>pkg install nodejs</code>s</p>
+<h4 id="加载外置存储空间"><a href="#加载外置存储空间" class="headerlink" title="加载外置存储空间"></a>加载外置存储空间</h4><p><code>termux-setup-storage</code> 注：默认执行ls命令是空的，那是因为没有加载存储空间。</p>
+<h4 id="连接远程服务器"><a href="#连接远程服务器" class="headerlink" title="连接远程服务器"></a>连接远程服务器</h4><p><code>ssh username @ ip -p portname</code>，例如： <code>ssh root @ 192.168.0.2 -p 22</code></p>
+<h3 id="常用技巧"><a href="#常用技巧" class="headerlink" title="常用技巧"></a>常用技巧</h3><ul>
+<li>两根手指向外或向内拖，可以放大或缩小显示字体。</li>
+<li>在屏幕左侧向右滑动，可以新建、切换session，或者调出键盘。</li>
+<li>菜单键可以呼出程序菜单（MIUI默认长按菜单键，具体根据实际按键设置而定），包含还原、销毁进程等常用操作。</li>
+</ul>
+]]></content>
+      
+        <categories>
+            
+            <category> 分享 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> termux </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[C++学习笔记(部分)]]></title>
+      <url>/2017/08/16/cpp/</url>
+      <content type="html"><![CDATA[<p>C++比较杂乱的注意点梳理。</p>
+<a id="more"></a>
+<ol>
+<li>C++中文乱码：Windows环境下的默认编码方式为GBK，所以修改为GBK编码方式即可。</li>
+<li>模板类的定义和实现要同时写到h文件中，不建议分离编写。</li>
+<li>new与不new的区别：new是在堆内存中申请空间，适合较大数据量或复杂数据类型；不new是在栈内存中申请空间，适合使用频繁或简单的数据类型。</li>
+<li>new一定要与delete配合使用，否则会发生内存泄漏。</li>
+<li>若new的是数组，则delete要写成delete[]。</li>
+<li>堆内存的使用要小心，需要手动释放内存；栈内存则不需要手动释放。</li>
+<li>-&gt;与.的区别：-&gt;通常是指针对其成员进行操作，.通常是对象对其成员进行操作。</li>
+<li>include中&lt;&gt;与””的区别：&lt;&gt;声明的文件会在编译器的目录中寻找（例如我使用的是MinGW，头文件在MinGW文件夹下的include文件夹中），若找不到则报错；””声明的文件会首先在编译文件的当前文件夹中寻找，若找不到则会在编译器的目录中寻找，若依旧找不到则报错。</li>
+<li>#pragma once与#ifndef的区别：作用都是为了防止重复定义，前者使用更方便，但移植性较差（许多编译器会提示报错）；后者使用略麻烦（配合#ifndef#define#endif实现），但大多数编译器可通过编译，代码移植性好。</li>
+<li>函数functionname()与(*functionname)()是等价的。注：functionname为任意一函数名</li>
+<li>“abc”的含义是：abc被解释为第一个元素的地址，通过操作符会返回其第一个元素的值，即a。</li>
+<li>引用与指针的一个不同点是：引用在声明的时候必须初始化，而指针可以先声明后赋值。</li>
+<li>使用引用参数的主要原因有两个：1）程序员能够修改调用函数中的数据对象；2）通过传递引用而不是整个数据对象，可以提高程序的运行速度。</li>
+</ol>
+]]></content>
+      
+        <categories>
+            
+            <category> 笔记 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> cpp </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Python3的MySQL连接工具PyMySQL]]></title>
+      <url>/2016/06/26/Python3%E7%9A%84MySQL%E8%BF%9E%E6%8E%A5%E5%B7%A5%E5%85%B7PyMySQL/</url>
+      <content type="html"><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在Python2.x的生态圈里，有一个很好用的MySQL连接工具叫做MySQL for Python，也叫MySQLdb。它用C语言编写，因此效能很高。但遗憾的是，Python3的最新版本已不再支持MySQLdb。PyMySQL则填补了这个遗憾，它完美支持Python3，语法与MySQLdb极为相似。另外，PyMySQL完全由Python编写。<br><a id="more"></a></p>
+<h1 id="PyMySQL的安装"><a href="#PyMySQL的安装" class="headerlink" title="PyMySQL的安装"></a>PyMySQL的安装</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install PyMySQL</span><br></pre></td></tr></table></figure>
+<h1 id="pmdemo-py"><a href="#pmdemo-py" class="headerlink" title="pmdemo.py"></a>pmdemo.py</h1><p>我们写一个简单的Python程序，连接MySQL数据库并从数据库里读取数据<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pymysql</span><br><span class="line">connection = pymysql.connect(host=<span class="string">'localhost'</span>, port=<span class="number">3306</span>, user=<span class="string">'root'</span>, passwd=<span class="string">'root'</span>, db=<span class="string">'mypy'</span>, charset=<span class="string">'utf8'</span>)</span><br><span class="line">cur = connection.cursor()</span><br><span class="line">sql=<span class="string">"SELECT * FROM blogs_articles"</span></span><br><span class="line">cur.execute(sql)</span><br><span class="line">result=cur.fetchall()</span><br><span class="line"><span class="keyword">for</span> r <span class="keyword">in</span> result:</span><br><span class="line">    print(r)</span><br><span class="line">cur.close()</span><br><span class="line">connection.close()</span><br></pre></td></tr></table></figure></p>
+<p>详细讲解：</p>
+<ul>
+<li>第一行引入pymysql，</li>
+<li>我们开始与数据库进行连接，调用pymysql里的connect()函数，该函数里有一些一定要填写的参数，比如host里填写数据库服务器的IP地址，port填端口，user和passwd分别是填写访问数据库时要用到的用户名和密码，db填写要连接的数据库名称，charset设置字符集，一般为utf8。</li>
+<li>接着我们设置一个游标，便于我们对数据库进行操作，调用刚刚生成的connection里的cursor()函数。</li>
+<li>定义一个SQL语句（SQL的语法这里就不多说了）。</li>
+<li>然后就可以执行SQL语句了，调用游标里的execute()函数，在该函数里加入刚刚定义的SQL语句。</li>
+<li>数据库操作已经完成了，是时候把数据取出并保存下来了。我们定义一个result变量，调用游标里的fetchall()函数。</li>
+<li>此时result里已经保存了刚刚查询出来的数据，利用print()把数据打印到屏幕上。</li>
+<li>最后别忘了关闭刚刚打开的连接，注意关闭顺序，先关闭游标后关闭数据库连接。</li>
+</ul>
+<p>让我们执行一下看看效果吧<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python pmdemo.py</span><br></pre></td></tr></table></figure></p>
+<p>#补充</p>
+<ul>
+<li>设置游标cur=connection.cursor()这句，如果cursor()函数里不加参数，那么输出的结果会以数组的形式保存，如果想以字典的形式保存，则在cursor()括号里加上pymysql.cursors.DictCursor。</li>
+<li>fetchall()表示获取全部记录，如果只获取一条记录则可以使用fetchone()。</li>
+</ul>
+]]></content>
+      
+        <categories>
+            
+            <category> 创作 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> python </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[JMeter官方文档2（翻译）]]></title>
+      <url>/2016/05/25/JMeter%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A32/</url>
+      <content type="html"><![CDATA[<p>英文原版地址：<a href="http://jmeter.apache.org/usermanual/get-started.html" target="_blank" rel="noopener">http://jmeter.apache.org/usermanual/get-started.html</a></p>
+<p>开始使用JMeter的最简单方法是首先下载最新的版本并安装它。这个发布版本包含了创建和运行各种测试所需要的文件，包括Web（HTTP/HTTPS）, FTP, JDBC, LDAP, Java, JUnit等等。<br><a id="more"></a></p>
+<p>如果你想做JDBC的性能测试，那么你需要从你的供应商获取JDBC驱动。JMeter不提供任何JDBC的驱动。</p>
+<p>JMeter提供JMS的API的jar包，但是不提供JMS客户端工具。如果你想运行JMS测试，那么请到JMS官网下载需要的jar包。</p>
+<p>接下来，我们启动JMeter并经过用户手册的构建测试计划的部分来熟悉JMeter的基本操作（比如添加或删除元素）。</p>
+<p>最后，经过关于如何建立特殊类型的测试计划部分。比如，你对一个Web应用的测试感兴趣，那么请查看构建测试计划的部分。其他测试计划部分：</p>
+<ul>
+<li>进阶Web测试</li>
+<li>JDBC</li>
+<li>FTP</li>
+<li>JMS点对点</li>
+<li>JMS Topic</li>
+<li>LDAP</li>
+<li>LDAP扩展</li>
+<li>WebServices（SOAP）<br>一旦你熟悉构建和运行JMeter的测试计划，你可以看看各种各样的配置元素（定时器，监听器，断言等）来为你的测试计划添加更多的控制。</li>
+</ul>
+<h1 id="2-1-配置要求"><a href="#2-1-配置要求" class="headerlink" title="2.1 配置要求"></a>2.1 配置要求</h1><p>JMeter要求你的计算机环境满足一些最低需求。</p>
+<h2 id="2-1-1-Java版本"><a href="#2-1-1-Java版本" class="headerlink" title="2.1.1 Java版本"></a>2.1.1 Java版本</h2><blockquote>
+<p>JMeter要求JVM7或更高</p>
+</blockquote>
+<h2 id="2-1-2操作系统"><a href="#2-1-2操作系统" class="headerlink" title="2.1.2操作系统"></a>2.1.2操作系统</h2><p>JMeter是一个100%的Java应用程序，所以需要在一个具有Java环境的操作系统中运行。</p>
+<p>操作系统要求在JMeter Wiki的这一页里。</p>
+<p>即使你的操作系统没有在Wiki页里显示，JMeter通常也可以运行，只要JVM符合要求。</p>
+<h1 id="2-2-可选项"><a href="#2-2-可选项" class="headerlink" title="2.2 可选项"></a>2.2 可选项</h1><p>如果你在做JMeter开发，那么你需要下面涉及的一种或多种可选包。</p>
+<h2 id="2-2-1-Java编译器"><a href="#2-2-1-Java编译器" class="headerlink" title="2.2.1 Java编译器"></a>2.2.1 Java编译器</h2><p>如果你想构建JMeter源或开发JMeter插件，那么需要JDK7以上的版本。</p>
+<h2 id="2-2-2-SAX-XML解析器"><a href="#2-2-2-SAX-XML解析器" class="headerlink" title="2.2.2 SAX XML解析器"></a>2.2.2 SAX XML解析器</h2><p>JMeter随Apache的Xerces XML Parser发布。你有告诉JMeter使用一种不同的XML分析器的选项。要做到这一点，包括在JMeter的classpath中第三方解析器的类，并更新带全类名解析器工具的jmeter.properties文件。</p>
+<h2 id="2-2-3-Email支持"><a href="#2-2-3-Email支持" class="headerlink" title="2.2.3 Email支持"></a>2.2.3 Email支持</h2><p>JMeter拥有丰富的电子邮件功能。它能发送基于测试报告的邮件，并拥有POP3(S)/IMAP(S)的采样器。它也拥有SMTP(S)采样器。</p>
+<h2 id="2-2-4-SSL加密"><a href="#2-2-4-SSL加密" class="headerlink" title="2.2.4 SSL加密"></a>2.2.4 SSL加密</h2><p>要测试一个使用SSL加密（HTTPS）的Web服务器，JMeter要求提供SSL实现工具，比如使用Sun Java 1.4等情况。如果你的Java版本不支持SSL，那也可以增加一个额外实现工具。在JMeter的classpath包含必须加密包。也可以更新system.properties来注册SSL提供者。</p>
+<p>JMeter的默认HTTP协议级别是TLS。编辑JMeter配置文件jmeter.properties或user.properties里的https.default.protocol可以改变他们。</p>
+<p>JMeter的HTTP采样器接受所有证书配置，无论是否能够信任并无视有效期等。这样实现来测试服务器的最大灵活性。</p>
+<p>如果服务器要求一个客户端证书，它也能被提供。</p>
+<p>对于那些对证书有严格控制的服务器也有SSL管理器。</p>
+<blockquote>
+<p>JMeter代理服务器支持录制HTTPS(SSL)</p>
+</blockquote>
+<p>该SMTP采样器可以选择使用本地信任存储区或信任的所有证书。</p>
+<h2 id="2-2-5-JDBC驱动"><a href="#2-2-5-JDBC驱动" class="headerlink" title="2.2.5 JDBC驱动"></a>2.2.5 JDBC驱动</h2><p>如果你想做JDBC测试，你需要将您的数据库供应商的JDBC驱动添加到classpath。确保文件是jar格式，而不是zip格式。</p>
+<h2 id="2-2-6-JMS客户端"><a href="#2-2-6-JMS客户端" class="headerlink" title="2.2.6 JMS客户端"></a>2.2.6 JMS客户端</h2><p>现在JMeter包含来自Apache Geronimo的JMS的API，所以你仅需要添加来自JMS提供者的JMS客户端实现工具jar包。请参考其文档以了解详情。在JMeter Wiki上也许也有一些有用的信息。</p>
+<h2 id="2-2-7-ActiveMQ-JMS库"><a href="#2-2-7-ActiveMQ-JMS库" class="headerlink" title="2.2.7 ActiveMQ JMS库"></a>2.2.7 ActiveMQ JMS库</h2><p>你需要向你的classpath添加名字为activemq-all-X.X.X.jar的jar包，例如通过将他们保存在lib/目录里。</p>
+<p>其他需要的jar包（比如commons-logging）已经包含在JMeter里。</p>
+<p>查看ActiveMQ 初始化配置页面以了解详情。</p>
+<blockquote>
+<p>查看JMeter Classpath部分，了解安装额外jar包的详情</p>
+</blockquote>
+<h1 id="2-3-安装"><a href="#2-3-安装" class="headerlink" title="2.3 安装"></a>2.3 安装</h1><p>我们推荐用户使用最新版本。</p>
+<p>要安装一个发行版本，简单地向你想安装JMeter的目录里解压zip/tar文件。如果你正确安装来JRE/JDK并配置好了JAVA_HOME环境变量，那就没啥再需要做的了。</p>
+<blockquote>
+<p>如果目录路径里包含空格则可能会出现问题（尤其是附带client-server模式）</p>
+</blockquote>
+<p>安装目录结构看起来应该像这个样子（X.Y是版本数字）：</p>
+<p>apache-jmeter-X.Y</p>
+<p>apache-jmeter-X.Y/bin</p>
+<p>apache-jmeter-X.Y/docs</p>
+<p>apache-jmeter-X.Y/extras</p>
+<p>apache-jmeter-X.Y/lib/</p>
+<p>apache-jmeter-X.Y/lib/ext</p>
+<p>apache-jmeter-X.Y/lib/junit</p>
+<p>apache-jmeter-X.Y/licenses</p>
+<p>apache-jmeter-X.Y/printable_docs</p>
+<p>你可以重命名父目录（比如apache-jmeter-X.Y），但一定不要更改子目录的名字。</p>
+<h1 id="2-4-运行JMeter"><a href="#2-4-运行JMeter" class="headerlink" title="2.4 运行JMeter"></a>2.4 运行JMeter</h1><p>要运行JMeter，请执行jmeter.bat（Windows环境下）或jmeter（Unix环境下）文件。这些文件能在bin目录下找到。等一小会儿，JMeter的图形界面就会出现。</p>
+<p>bin目录里有一些你也许觉得有用的其他脚本。</p>
+<p>Windows脚本文件（.CMD文件要求Windows 2000或以后的版本）：</p>
+<p>jmeter.bat</p>
+<p>运行JMeter（默认为图形界面模式）</p>
+<p>jmeterw.cmd</p>
+<p>运行不带Windows外壳程序控制台的JMeter（默认为图形界面模式）</p>
+<p>jmeter-n.cmd</p>
+<p>使用一个JMX文件并运行一个无图形界面的测试</p>
+<p>jmeter-n-r.cmd</p>
+<p>使用一个JMX文件并远程运行一个无图形界面的测试</p>
+<p>jmeter-t.cmd</p>
+<p>使用一个JMX文件并在GUI模式载入它</p>
+<p>jmeter-server.cmd</p>
+<p>启动JMeter服务器模式</p>
+<p>mirror-server.cmd</p>
+<p>运行非GUI模式的JMeter镜像服务器</p>
+<p>shutdown.cmd</p>
+<p>运行shutdown客户端正常停止非GUI实例</p>
+<p>stoptest.cmd</p>
+<p>运行shutdown客户端突然停止非GUI实例</p>
+<blockquote>
+<p>特殊名字LAST可以用在jmeter-n.cmd,jmeter-t.cmd和jmeter-n-r.cmd上，那就意味着测试计划会在最后执行</p>
+</blockquote>
+<p>环境变量JVM_ARGS可用于重写JVM设置在jmeter.bat脚本里。例如：</p>
+<p>set JVM_ARGS=”-Xms1024m -Xmx1024m -Dpropname=propvalue”</p>
+<p>jmeter -t test.jmx …</p>
+<p>Un*x脚本文件（可在大多数Linux/Unix系统运行）：</p>
+<p>jmeter</p>
+<p>运行JMeter（默认为图形界面模式）。定义的一些JVM设置可能不适合所有JVM运行。</p>
+<p>jmeter-server</p>
+<p>启动JMeter服务器模式（调用带适当参数的JMeter脚本）。</p>
+<p>jmeter.sh</p>
+<p>非常基本的JMeter脚本（你可能需要调整JVM设置，如内存设置）。</p>
+<p>mirror-server.sh</p>
+<p>运行非GUI模式的JMeter镜像服务器</p>
+<p>shutdown.sh</p>
+<p>运行shutdown客户端正常停止非GUI实例</p>
+<p>stoptest.sh</p>
+<p>运行shutdown客户端突然停止非GUI实例</p>
+<p>如果一些JVM设置不被你所使用的JVM支持，那可能需要编辑JMeter的Shell脚本。环境变量JVM_ARGS可悲重写或设置其他JVM设置，比如：</p>
+<p>JVM_ARGS=”-Xms1024m -Xmx1024m” jmeter -t test.jmx[etc.]</p>
+<p>将重写脚本里的HEAP设置。</p>
+<h2 id="2-4-1-JMeter的Classpath"><a href="#2-4-1-JMeter的Classpath" class="headerlink" title="2.4.1 JMeter的Classpath"></a>2.4.1 JMeter的Classpath</h2><p> JMeter能够自动在下列目录中找到来自jar包中的类：</p>
+<p>JMETER_HOME/lib</p>
+<p>用于公用jar包</p>
+<p>JMETER_HOME/lib/ext</p>
+<p>用于JMeter组件和插件</p>
+<p>如果你已经开发过新的JMeter组件，那你应该把他们做成jar包并复制到JMeter的lib/ext目录下。JMeter将自动找到该目录下任意jar包里的JMeter组件。不要把公用jar包或插件使用的依赖jar包放到lib/ext目录下；它仅用于JMeter的组件和插件。</p>
+<p>如果你不想把JMeter插件jar包放到lib/ext目录下，那么可以对jmeter.properties里的search_paths进行设置。</p>
+<p>公用和依赖jar包（库等）可以放在lib目录下。</p>
+<p>如果你不想把这些jar包放到lib目录下，那么可以对jmeter.properties里的user.classpath或plugin_dependency_paths进行设置。请参阅以下差异的说明。</p>
+<p>其他jar包（例如JDBC，JMS实现工具以及其他被JMeter代码所支持的库）应该放到lib目录下，而不是lib/ext目录下或增加到user.classpath。</p>
+<blockquote>
+<p>JMeter只能识别.jar文件，而不会识别.zip文件</p>
+</blockquote>
+<p>你也可以在$JAVA_HOME/jre/lib/ext里安装公用jar文件，或者你可以对jmeter.properties里的user.classpath进行设置。</p>
+<p>请注意，设置CLASSPATH环境变量将不会有任何效果。这是因为JMeter随“java -jar”启动，并且当-jar被使用时，java命令会悄悄地忽视CLASSPATH变量和-classpath/-cp选项。</p>
+<blockquote>
+<p>这发生在所有的Java程序而不仅仅是Jmeter</p>
+</blockquote>
+<h2 id="2-4-2-从模板创建测试计划"><a href="#2-4-2-从模板创建测试计划" class="headerlink" title="2.4.2 从模板创建测试计划"></a>2.4.2 从模板创建测试计划</h2><p>你能够从已经存在的模板中创建一个新的测试计划。</p>
+<p>要做到这一点，单击菜单 文件→Templates… 或 Templates图标：<br><img src="images/20160529/1.png" alt="1"><br>弹出对话框，你可以在这个列表里选择一个模板：<br><img src="images/20160529/2.png" alt="2"><br>对于每个模板都有个文档，它会说明测试计划从模板中被创建后要做什么。</p>
+<h2 id="2-4-3-在JMeter中使用代理"><a href="#2-4-3-在JMeter中使用代理" class="headerlink" title="2.4.3 在JMeter中使用代理"></a>2.4.3 在JMeter中使用代理</h2><p>如果你正在测试具有防火墙/代理的服务器，你需要为JMeter提供防火墙/代理服务器的主机名和端口号。要做到这一点，在命令行执行jmeter[.bat]文件并附带以下命令：</p>
+<p>-H</p>
+<p>[代理服务器主机名或IP地址]</p>
+<p>-P</p>
+<p>[代理服务器端口]</p>
+<p>-N</p>
+<p>[非代理主机]（例如*.apache.org|localhost）</p>
+<p>-u</p>
+<p>[代理身份验证的用户名（如果需要的话）]</p>
+<p>-a</p>
+<p>[代理身份验证的密码（如果需要的话）]</p>
+<p>例子：</p>
+<p>jmeter -H my.proxy.server -P 8000 -u username -a password -N localhost</p>
+<p>你也可以使用–proxyHost，–proxyPort，–username和–password作为参数名称。</p>
+<blockquote>
+<p>提供的命令行参数对系统其他用户可见</p>
+</blockquote>
+<p>如果提供了代理主机和端口，那么JMeter会设置以下系统属性：</p>
+<p>http.proxyHost</p>
+<p>http.proxyPort</p>
+<p>https.proxyHost</p>
+<p>https.proxyPort</p>
+<p>如果提供了非代理主机列表，那么JMeter会设置以下系统属性：</p>
+<p>http.nonPorxyHosts</p>
+<p>https.nonProxyHosts</p>
+<p>所以如果你不想同时设置http和https代理，你可以在system.properties设置相关属性而不是使用命令行参数。</p>
+<p>代理设置也可以在一个测试计划里定义，使用HTTP默认请求配置或HTTP请求采样器元素。</p>
+<blockquote>
+<p>JMeter也有它自己的内置代理服务器——HTTP(S)测试脚本录制器。这只能用于录制HTTP或HTTPS浏览器会话。当JMeter自己产生HTTP或HTTPS请求被使用，它不能与上述的代理设置相混淆</p>
+</blockquote>
+<h2 id="2-4-4-非GUI模式（命令行模式）"><a href="#2-4-4-非GUI模式（命令行模式）" class="headerlink" title="2.4.4 非GUI模式（命令行模式）"></a>2.4.4 非GUI模式（命令行模式）</h2><p>对于非交互测试，你可以运行不带图形界面的JMeter。要做到这一点，使用以下命令选项：</p>
+<p>-n</p>
+<p>这个专门用来运行不带图形界面的JMeter</p>
+<p>-t</p>
+<p>[包含测试计划的JMX文件的文件名]</p>
+<p>-l</p>
+<p>[记录采样器结果的JTL文件的文件名]</p>
+<p>-j</p>
+<p>[运行JMeter日志文件的文件名]</p>
+<p>-r</p>
+<p>在设置过JMeter属性“remote_hosts”的服务器里运行测试</p>
+<p>-R</p>
+<p>[远程服务器列表] 在特定的远程服务器里运行测试</p>
+<p>-g</p>
+<p>[CSV文件路径] 仅生成报告仪表板</p>
+<p>-e</p>
+<p>负载测试过后生成报告仪表板</p>
+<p>-o</p>
+<p>负载测试过后生成报告仪表板的输出文件夹</p>
+<p>文件夹必须不存在或者为空</p>
+<p>该脚本还可以指定可选的防火墙/代理服务信息：</p>
+<p>-H</p>
+<p>[代理服务器主机名或IP地址]</p>
+<p>-P</p>
+<p>[代理服务器端口]</p>
+<p>例子：</p>
+<p>jmeter -n -t my_test.jmx -l log.jtl -H my.proxy.server -P 8000</p>
+<p>如果jmeterengine.stopfail.system.exit属性被设置为真（默认为假），那么JMeter将调用System.exit(1)如果它不能停止所有线程。</p>
+<p>通常那不是必须的。</p>
+<h2 id="2-4-5-服务器模式"><a href="#2-4-5-服务器模式" class="headerlink" title="2.4.5 服务器模式"></a>2.4.5 服务器模式</h2><p>对于分布式测试，在远程节点运行JMeter服务器模式，并且从GUI控制服务器。你也可以使用非GUI模式来运行远程测试。要启动服务器，在每个服务器主机运行jmeter-server[.bat]。</p>
+<p>该脚本还可以指定可选的防火墙/代理服务信息：</p>
+<p>-H</p>
+<p>[代理服务器主机名或IP地址]</p>
+<p>-P</p>
+<p>[代理服务器端口]</p>
+<p>例子：</p>
+<p>jmeter-server -H my.proxy.server -P 8000</p>
+<p>如果你想让服务器在单个测试已经运行后退出，那么请设置JMeter属性server.exitaftertest=true。</p>
+<p>要在客户端里运行非GUI模式测试，使用下列命令：</p>
+<p>jmeter -n -t testplan.jmx -r [-Gprop=val] [-Gglobal.properties] [-X]</p>
+<p>其中：</p>
+<p>-G</p>
+<p>被用来定义服务器里JMeter属性</p>
+<p>-X</p>
+<p>意味着在测试结束时退出服务器</p>
+<p>-Rserver1,server2</p>
+<p>可用来代替-r提供服务器启动的列表。重写remote_hosts，但不定义属性。</p>
+<p>如果jmeterengine.remote.system.exit属性被设置为真（默认为假），那么在测试结束时停止RMI后JMeter将调用System.exit(0)。通常那不是必须的。</p>
+<h2 id="2-4-6-通过命令行重写属性"><a href="#2-4-6-通过命令行重写属性" class="headerlink" title="2.4.6 通过命令行重写属性"></a>2.4.6 通过命令行重写属性</h2><p>Java系统属性，JMeter属性和日志属性可以直接在命令行下重写（而不是修改jmeter.properties）。要做到这一点，请使用下列选项：</p>
+<p>-D[prop_name]=[value]<br>定义Java系统属性值。<br>-J[prop_name]=[value]<br>定义本地JMeter属性。<br>-G[prop_name]=[value]<br>定义要发送给所有远程服务器的JMeter属性。<br>-G[propertyfile]<br>定义包含发送给所有远程服务器的JMeter属性的文件。<br>-L[category]=[priority]<br>重写日志设置，设置一个特定级别的优先级。<br>-L标记也可以不带目录名称用于设置根目录日志级别。</p>
+<p>例子：</p>
+<pre><code>jmeter -Duser.dir=/home/mstover/jmeter_stuff
+
+-Jremote_hosts=127.0.0.1 -Ljmeter.engine=DEBUG
+
+jmeter -LDEBUG
+</code></pre><blockquote>
+<p>命令行属性在启动初期处理，但那会在日志系统建立后处理。所以尝试使用-J标记来更新log_level或log_file属性将不会有作用。</p>
+</blockquote>
+<h2 id="2-4-7-日志和错误信息"><a href="#2-4-7-日志和错误信息" class="headerlink" title="2.4.7 日志和错误信息"></a>2.4.7 日志和错误信息</h2><p>JMeter一般不会使用弹出式对话框来显示错误，因为这将与运行测试产生冲突。他也没有报告任何变量或函数的拼写错误。查看函数和变量部分获取更多信息。<br>如果JMeter在测试时检测到错误，那么消息会写在日志文件里。日志文件名在jmter.properties文件里定义（或使用-j选项，见下文）。默认文件名为jmeter.log，并且该文件会在已经启动的JMeter下的目录里找到。</p>
+<p>菜单 选项→Log Viewer 显示在JMeter主窗口底部窗格的日志文件。</p>
+<p>在GUI模式下，错误/致命错误的数量会记录在日志文件里并显示着右上角。<br><img src="images/20160529/3.png" alt="3"><br>命令行选项-j jmeterlogfile 允许在初始属性文件被读取后或在进一步属性处理之前处理。因此允许jmeter.log的默认值被重写。这需要一个测试计划名称作为参数（例如jmeter-n.cmd），已经使用测试计划名称更新日志文件定义，例如对于Test27.jmx的日志文件就命名为Test27.log。</p>
+<p>当JMeter在Windows下运行，那么文件可能只会显示为jmeter除非你已经设置显示文件扩展名[反正你需要做的就是，使其更容易检测到装成文本文件的病毒或其他糟糕的东西…]</p>
+<p>还有记录错误，jmeter.log文件记录了测试运行的一些信息。例如：</p>
+<p>10/17/2003 12:19:20 PM INFO  - jmeter.JMeter: Version 1.9.20031002</p>
+<p>10/17/2003 12:19:45 PM INFO  - jmeter.gui.action.Load: Loading file: c:mytestfilesBSH.jmx</p>
+<p>10/17/2003 12:19:52 PM INFO  - jmeter.engine.StandardJMeterEngine: Running the test!</p>
+<p>10/17/2003 12:19:52 PM INFO  - jmeter.engine.StandardJMeterEngine: Starting 1 threads for group BSH. Ramp up = 1.</p>
+<p>10/17/2003 12:19:52 PM INFO  - jmeter.engine.StandardJMeterEngine: Continue on error</p>
+<p>10/17/2003 12:19:52 PM INFO  - jmeter.threads.JMeterThread: Thread BSH1-1 started</p>
+<p>10/17/2003 12:19:52 PM INFO  - jmeter.threads.JMeterThread: Thread BSH1-1 is done</p>
+<p>10/17/2003 12:19:52 PM INFO  - jmeter.engine.StandardJMeterEngine: Test has ended</p>
+<p>日志文件对缺点错误原因很有帮助，而且JMeter不会中断测试来显示错误对话。</p>
+<h2 id="2-4-8-命令行选项完整列表"><a href="#2-4-8-命令行选项完整列表" class="headerlink" title="2.4.8 命令行选项完整列表"></a>2.4.8 命令行选项完整列表</h2><p>调用jmeter -?命令会显示所有命令行选项列表。</p>
+<h2 id="2-4-9-非GUI的关闭"><a href="#2-4-9-非GUI的关闭" class="headerlink" title="2.4.9 非GUI的关闭"></a>2.4.9 非GUI的关闭</h2><p>在之前的2.5.1版本，当非GUI测试完成时JMeter调用System.exit()命令结束。这对直接调用JMeter的应用会造成问题，所以完成一个通常测试后JMeter不再调用System.exit()。[某些致命错误仍可能调用System.exit()]JMeter会推出所有它启动的非守护线程，但一些非守护线程可能会依然存在；这将阻止JVM的退出，为检测这种情况，JMeter在它退出前会启动一个新的守护线程。这个守护县城会等待一小会儿；如果它从等待返回，那么就能清楚地了解JVM一直未退出，并且线程会显示信息来说明原因。</p>
+<h1 id="2-5-配置JMeter"><a href="#2-5-配置JMeter" class="headerlink" title="2.5 配置JMeter"></a>2.5 配置JMeter</h1><p>如果你想修改JMeter的一些属性，那么你需要修改/bin目录下的user.properties或创建你自己的jmeter.properties副本并在命令行下指定它。</p>
+<blockquote>
+<p>说明：你可以在具有默认值的user.properties下定义其他的JMeter属性。这个文件将被自动读取如果它在JMeter的bin目录下被找到。同样，system.properties被用来更新系统属性</p>
+</blockquote>
+]]></content>
+      
+        <categories>
+            
+            <category> 创作 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> JMeter </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[JMeter官方文档（翻译）]]></title>
+      <url>/2016/05/24/JMeter%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3/</url>
+      <content type="html"><![CDATA[<p>英文原版地址：<a href="http://jmeter.apache.org/" target="_blank" rel="noopener">http://jmeter.apache.org/</a></p>
+<h1 id="Apache-JMeter"><a href="#Apache-JMeter" class="headerlink" title="Apache JMeter"></a>Apache JMeter</h1><p>Apache JMeter程序是一款开源软件，100%纯Java程序，它用于负载测试、功能行为测试和性能测试。它最初用于Web应用程序的测试，但至今它已经得到扩展并用于其他方面的测试。<br><a id="more"></a></p>
+<h1 id="我可以用它来做什么？"><a href="#我可以用它来做什么？" class="headerlink" title="我可以用它来做什么？"></a>我可以用它来做什么？</h1><p>Apache JMeter可用来测试静态或动态资源（Web服务（SOAP/REST），Web动态语言PHP，Java，ASP.NET文件等等，Java对象，数据库和查询，FTP服务器或其他）的性能。它能够在服务器，服务器群或对象上模拟出很强的负载，测试他们的强度或来分析在不同负载类型下他们的总体性能。你可以用它来制作一个图形化的性能分析报告或测试你的服务器/脚本/对象在强并发负载下的表现。</p>
+<h1 id="它可以做什么？"><a href="#它可以做什么？" class="headerlink" title="它可以做什么？"></a>它可以做什么？</h1><p>Apache JMeter的特点包括：</p>
+<p>能够对多种不同的服务器/协议类型进行负载和性能测试：</p>
+<ul>
+<li>Web - HTTP, HTTPS</li>
+<li>SOAP / REST</li>
+<li>FTP</li>
+<li>由 JDBC连接的数据库</li>
+<li>LDAP</li>
+<li>通过Java消息服务（Java Message Service）的面向消息中间件（MOM）</li>
+<li>邮箱 - SMTP(S), POP3(S) 和 IMAP(S)</li>
+<li>本地命令或Shell脚本</li>
+<li>TCP</li>
+</ul>
+<p>完全的可移植性和100%的Java纯度。<br>完整的多线程框架允许通过多个线程进行并发采样并通过不同功能的单独线程组进行同步采样。<br>精心的GUI界面设计让测试计划的建立和排错速度变得更快。<br>高速缓存和测试结果的离线分析/重放。<br>高度可扩展的核心：</p>
+<ul>
+<li>可插拔的采样器让测试功能不受到约束。</li>
+<li>多种负载统计可以跟可插拔的计时器一起选择使用。</li>
+<li>数据分析和可视化插件允许我们高度扩展并个性化。</li>
+<li>具有可为测试提供一种动态输入或提供数据操作的功能。</li>
+<li>脚本化采样器 (BeanShell, 兼容BSF的语言和兼容JSR223的语言)</li>
+</ul>
+<h1 id="JMeter不是浏览器"><a href="#JMeter不是浏览器" class="headerlink" title="JMeter不是浏览器"></a>JMeter不是浏览器</h1><p>JMeter不是浏览器。在Web服务和远程服务方面，JMeter看起来像个浏览器（甚至是多个浏览器）；然而JMeter不会执行浏览器所支持的所有行为。尤其是JMeter不会去执行HTML页面里的JavaScript脚本。它也不会像浏览器那样呈现HTML页面（它可以查看作为HTML的响应等等，但不会在任何样本里包含时间控制，并且一个线程里每次只有一个样本被查看）。</p>
+]]></content>
+      
+        <categories>
+            
+            <category> 创作 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> JMeter </tag>
+            
+        </tags>
+        
+    </entry>
+    
+  
+  
+</search>
